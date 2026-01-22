@@ -1,0 +1,24 @@
+# Secrets and environment
+.env
+*.env.local
+
+# Runtime data
+*.db
+*.log
+*.pid
+*.lock
+
+# Karton work
+karton-workdir/
+
+# Storage (large files)
+storage/
+
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# Docker
+docker-compose.override.yml

@@ -1,0 +1,225 @@
+# MWDB-core + Karton Stack
+# Production deployment for malware analysis pipeline
+# Documentation: https://mwdb.readthedocs.io/
+
+services:
+  # PostgreSQL Database
+  mwdb-postgres:
+    image: postgres:17-alpine
+    container_name: mwdb-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - mwdb-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis for Karton Queue + MWDB Cache
+  mwdb-redis:
+    image: redis:7-alpine
+    container_name: mwdb-redis
+    restart: always
+    command: redis-server --appendonly yes
+    volumes:
+      - mwdb-redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # MinIO S3-compatible Storage
+  mwdb-minio:
+    image: minio/minio:latest
+    container_name: mwdb-minio
+    restart: always
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes:
+      - ${MWDB_STORAGE_PATH}:/data
+    ports:
+      - "127.0.0.1:9000:9000"   # S3 API
+      - "127.0.0.1:9001:9001"   # MinIO Console
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  # MinIO Bucket Initialization
+  mwdb-minio-init:
+    image: minio/mc:latest
+    container_name: mwdb-minio-init
+    depends_on:
+      mwdb-minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set myminio http://mwdb-minio:9000 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD};
+      mc mb --ignore-existing myminio/karton;
+      mc mb --ignore-existing myminio/mwdb;
+      echo 'Buckets initialized successfully';
+      exit 0;
+      "
+
+  # MWDB Core Backend
+  mwdb:
+    image: certpl/mwdb:master
+    container_name: mwdb
+    restart: always
+    depends_on:
+      mwdb-postgres:
+        condition: service_healthy
+      mwdb-redis:
+        condition: service_healthy
+      mwdb-minio-init:
+        condition: service_completed_successfully
+    environment:
+      MWDB_SECRET_KEY: ${MWDB_SECRET_KEY}
+      MWDB_POSTGRES_URI: ${MWDB_POSTGRES_URI}
+      MWDB_REDIS_URI: ${MWDB_REDIS_URI}
+      MWDB_ENABLE_KARTON: ${MWDB_ENABLE_KARTON}
+      MWDB_ADMIN_LOGIN: ${MWDB_ADMIN_LOGIN}
+      MWDB_ADMIN_PASSWORD: ${MWDB_ADMIN_PASSWORD}
+      MWDB_BASE_URL: ${MWDB_BASE_URL}
+      MWDB_STORAGE_PROVIDER: ${MWDB_STORAGE_PROVIDER}
+      MWDB_S3_STORAGE_ENDPOINT: ${MWDB_S3_STORAGE_ENDPOINT}
+      MWDB_S3_STORAGE_ACCESS_KEY: ${MWDB_S3_STORAGE_ACCESS_KEY}
+      MWDB_S3_STORAGE_SECRET_KEY: ${MWDB_S3_STORAGE_SECRET_KEY}
+      MWDB_S3_STORAGE_BUCKET_NAME: ${MWDB_S3_STORAGE_BUCKET_NAME}
+      MWDB_S3_STORAGE_SECURE: ${MWDB_S3_STORAGE_SECURE}
+      # Karton configuration via environment
+      KARTON_S3_ACCESS_KEY: ${KARTON_S3_ACCESS_KEY}
+      KARTON_S3_SECRET_KEY: ${KARTON_S3_SECRET_KEY}
+      KARTON_S3_ADDRESS: ${KARTON_S3_ADDRESS}
+      KARTON_S3_BUCKET: ${KARTON_S3_BUCKET}
+      KARTON_REDIS_HOST: ${KARTON_REDIS_HOST}
+      KARTON_REDIS_PORT: ${KARTON_REDIS_PORT}
+    volumes:
+      - ./karton.ini:/etc/karton/karton.ini:ro
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:8080/api/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 120s
+
+  # MWDB Web Frontend
+  mwdb-web:
+    image: certpl/mwdb-web:master
+    container_name: mwdb-web
+    restart: always
+    depends_on:
+      mwdb:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8081:80"
+    environment:
+      PROXY_BACKEND_URL: http://mwdb:8080
+
+  # Karton System (Task Dispatcher)
+  karton-system:
+    image: certpl/karton-system:master
+    container_name: karton-system
+    restart: always
+    depends_on:
+      mwdb-redis:
+        condition: service_healthy
+      mwdb-minio:
+        condition: service_healthy
+    volumes:
+      - ./karton.ini:/etc/karton/karton.ini:ro
+    command: ["--setup-bucket"]
+
+  # Karton Classifier (Sample Type Detection)
+  karton-classifier:
+    image: certpl/karton-classifier:v2.1.0
+    container_name: karton-classifier
+    restart: always
+    depends_on:
+      - karton-system
+    volumes:
+      - ./karton.ini:/etc/karton/karton.ini:ro
+
+  # Karton Dashboard (Web UI)
+  karton-dashboard:
+    image: certpl/karton-dashboard:latest
+    container_name: karton-dashboard
+    restart: always
+    depends_on:
+      - karton-system
+    ports:
+      - "127.0.0.1:8082:5000"
+    volumes:
+      - ./karton.ini:/etc/karton/karton.ini:ro
+
+  # Karton MWDB Reporter (Results back to MWDB)
+  karton-mwdb-reporter:
+    image: certpl/karton-mwdb-reporter:latest
+    container_name: karton-mwdb-reporter
+    restart: always
+    depends_on:
+      mwdb:
+        condition: service_healthy
+      karton-system:
+        condition: service_started
+    volumes:
+      - ./karton.ini:/etc/karton/karton.ini:ro
+    environment:
+      MWDB_URL: http://mwdb:8080/api
+      # API Key wird nach MWDB-Init gesetzt
+      # MWDB_API_KEY:
+
+  # Karton Archive Extractor (ZIP/RAR/7z extraction)
+  karton-archive-extractor:
+    image: certpl/karton-archive-extractor:v1.5.1
+    container_name: karton-archive-extractor
+    restart: always
+    depends_on:
+      - karton-system
+    volumes:
+      - ./karton.ini:/etc/karton/karton.ini:ro
+
+  # Karton CAPE Submitter (Custom - submits samples to CAPEv2)
+  karton-cape-submitter:
+    build:
+      context: ./kartons/cape_submitter
+      dockerfile: Dockerfile
+    container_name: karton-cape-submitter
+    restart: always
+    depends_on:
+      mwdb:
+        condition: service_healthy
+      karton-system:
+        condition: service_started
+    volumes:
+      - ./karton.ini:/etc/karton/karton.ini:ro
+    environment:
+      CAPE_SUBMIT_URL: ${CAPE_SUBMIT_URL}
+      CAPE_TLS_VERIFY: ${CAPE_TLS_VERIFY}
+      CAPE_TAGS_DEFAULT: ${CAPE_TAGS_DEFAULT}
+      CAPE_ALLOWED_TAGS: ${CAPE_ALLOWED_TAGS}
+      CAPE_RETRY_MAX: "5"
+      CAPE_RETRY_BACKOFF_SECONDS: "60"
+      MAX_MB_PER_FILE: "50"
+    # Use host network to reach CAPE on 127.0.0.1
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  mwdb-postgres-data:
+    driver: local
+  mwdb-redis-data:
+    driver: local
+
+networks:
+  default:
+    name: mwdb-network
