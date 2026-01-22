@@ -2,7 +2,18 @@
 
 **MWDB-core with Karton Orchestration for Malware Sample Management**
 
+Part of the [IcePorge](https://github.com/icepaule/IcePorge) Malware Analysis Stack.
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+---
+
+## Screenshots
+
+### MWDB Web Interface
+![MWDB Web Interface](docs/screenshots/mwdb-webui.png)
+
+*MWDB provides a modern web interface for managing malware samples, viewing analysis results, and exploring relationships between samples.*
 
 ---
 
