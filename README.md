@@ -29,6 +29,72 @@ Part of the [IcePorge](https://github.com/icepaule/IcePorge) Malware Analysis St
 
 ### 1.1 Architektur
 
+![MWDB-Stack Architektur](docs/mwdb-stack-architecture.svg)
+
+<details>
+<summary>Mermaid-Diagramm (klicken zum Ausklappen)</summary>
+
+```mermaid
+flowchart TB
+    subgraph FEEDS["MALWARE FEED SOURCES"]
+        URLhaus["URLhaus"]
+        ThreatFox["ThreatFox"]
+        HybridA["Hybrid Analysis"]
+    end
+
+    subgraph PARALLEL["Parallele Pipeline"]
+        MB["MalwareBazaar"]
+        RWL["ransomware.live"]
+        CapeFeed["cape-feed"]
+        MB --> CapeFeed
+        RWL --> CapeFeed
+    end
+
+    Feeder["mwdb-feeder<br/>Poll → Dedupe → Download"]
+    FEEDS --> Feeder
+
+    subgraph STACK["MWDB + Karton Stack"]
+        subgraph MWDB["MWDB-core"]
+            Repo["Malware Repository"]
+            WebUI["Web UI :8443"]
+            PG["PostgreSQL"]
+            MinIO["MinIO S3"]
+        end
+
+        subgraph KARTON["Karton Orchestration"]
+            System["karton-system"]
+            Redis["Redis Queue"]
+            System <--> Redis
+        end
+
+        subgraph MODULES["Karton Module"]
+            Classifier["classifier"]
+            Archive["archive-extractor"]
+            Reporter["mwdb-reporter"]
+            CapeSubmit["cape-submitter"]
+            Dashboard["dashboard :8444"]
+        end
+
+        MWDB --> KARTON
+        KARTON --> MODULES
+    end
+
+    Feeder --> MWDB
+    CapeSubmit --> CAPE["CAPEv2<br/>Dynamic Analysis"]
+    CapeFeed --> CAPE
+    CAPE --> MISP["MISP"]
+
+    style FEEDS fill:#667eea,color:#fff
+    style PARALLEL fill:#a8edea,color:#333
+    style MWDB fill:#f093fb,color:#fff
+    style KARTON fill:#4facfe,color:#fff
+    style CAPE fill:#ff0844,color:#fff
+```
+</details>
+
+<details>
+<summary>ASCII-Diagramm (Legacy)</summary>
+
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │                    MALWARE FEED SOURCES                             │
@@ -74,6 +140,7 @@ Part of the [IcePorge](https://github.com/icepaule/IcePorge) Malware Analysis St
 Parallel bestehend (unverändert):
   MalwareBazaar ──► cape-feed ──► CAPE ──► MISP
 ```
+</details>
 
 ### 1.2 Komponenten
 

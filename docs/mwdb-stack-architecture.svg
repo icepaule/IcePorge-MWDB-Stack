@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 850" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="feedGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea"/>
+      <stop offset="100%" style="stop-color:#764ba2"/>
+    </linearGradient>
+    <linearGradient id="feederGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#11998e"/>
+      <stop offset="100%" style="stop-color:#38ef7d"/>
+    </linearGradient>
+    <linearGradient id="mwdbGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f093fb"/>
+      <stop offset="100%" style="stop-color:#f5576c"/>
+    </linearGradient>
+    <linearGradient id="kartonGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4facfe"/>
+      <stop offset="100%" style="stop-color:#00f2fe"/>
+    </linearGradient>
+    <linearGradient id="infraGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#fa709a"/>
+      <stop offset="100%" style="stop-color:#fee140"/>
+    </linearGradient>
+    <linearGradient id="capeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff0844"/>
+      <stop offset="100%" style="stop-color:#ffb199"/>
+    </linearGradient>
+    <linearGradient id="capeFeedGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#a8edea"/>
+      <stop offset="100%" style="stop-color:#fed6e3"/>
+    </linearGradient>
+
+    <!-- Shadow filter -->
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="3" dy="3" stdDeviation="4" flood-opacity="0.3"/>
+    </filter>
+
+    <!-- Arrow markers -->
+    <marker id="arrowPurple" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#667eea"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#38ef7d"/>
+    </marker>
+    <marker id="arrowPink" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#f5576c"/>
+    </marker>
+    <marker id="arrowCyan" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#00f2fe"/>
+    </marker>
+    <marker id="arrowRed" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#ff0844"/>
+    </marker>
+    <marker id="arrowOrange" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#fee140"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1000" height="850" fill="#0f0f23"/>
+
+  <!-- Title -->
+  <text x="500" y="35" text-anchor="middle" font-size="22" font-weight="bold" fill="#ffffff">MWDB + Karton Stack Architecture</text>
+  <text x="500" y="55" text-anchor="middle" font-size="11" fill="#888">MWDB-core mit Karton-Orchestrierung und Multi-Source Feeder</text>
+
+  <!-- MALWARE FEED SOURCES Section -->
+  <rect x="30" y="70" width="940" height="95" rx="10" fill="none" stroke="#667eea" stroke-width="2" stroke-dasharray="5,5"/>
+  <text x="50" y="88" font-size="10" fill="#667eea" font-weight="bold">MALWARE FEED SOURCES</text>
+
+  <!-- Feed boxes -->
+  <rect x="50" y="100" width="140" height="55" rx="6" fill="url(#feedGrad)" filter="url(#shadow)"/>
+  <text x="120" y="122" text-anchor="middle" font-size="11" font-weight="bold" fill="#fff">URLhaus</text>
+  <text x="120" y="138" text-anchor="middle" font-size="9" fill="#ddd">abuse.ch</text>
+  <text x="120" y="150" text-anchor="middle" font-size="8" fill="#aaffaa">5 min</text>
+
+  <rect x="210" y="100" width="140" height="55" rx="6" fill="url(#feedGrad)" filter="url(#shadow)"/>
+  <text x="280" y="122" text-anchor="middle" font-size="11" font-weight="bold" fill="#fff">ThreatFox</text>
+  <text x="280" y="138" text-anchor="middle" font-size="9" fill="#ddd">abuse.ch</text>
+  <text x="280" y="150" text-anchor="middle" font-size="8" fill="#aaffaa">5 min</text>
+
+  <rect x="370" y="100" width="140" height="55" rx="6" fill="url(#feedGrad)" filter="url(#shadow)"/>
+  <text x="440" y="122" text-anchor="middle" font-size="11" font-weight="bold" fill="#fff">Hybrid Analysis</text>
+  <text x="440" y="138" text-anchor="middle" font-size="9" fill="#ddd">Falcon Sandbox</text>
+  <text x="440" y="150" text-anchor="middle" font-size="8" fill="#aaffaa">15 min</text>
+
+  <!-- Separator -->
+  <line x1="540" y1="100" x2="540" y2="155" stroke="#444" stroke-width="1" stroke-dasharray="3,3"/>
+
+  <!-- Parallel feeds label -->
+  <text x="690" y="88" text-anchor="middle" font-size="9" fill="#a8edea">Parallele Pipeline (cape-feed)</text>
+
+  <rect x="570" y="100" width="140" height="55" rx="6" fill="url(#capeFeedGrad)" filter="url(#shadow)"/>
+  <text x="640" y="122" text-anchor="middle" font-size="11" font-weight="bold" fill="#333">MalwareBazaar</text>
+  <text x="640" y="138" text-anchor="middle" font-size="9" fill="#555">abuse.ch</text>
+  <text x="640" y="150" text-anchor="middle" font-size="8" fill="#2a6e2a">30 sec</text>
+
+  <rect x="730" y="100" width="140" height="55" rx="6" fill="url(#capeFeedGrad)" filter="url(#shadow)"/>
+  <text x="800" y="122" text-anchor="middle" font-size="11" font-weight="bold" fill="#333">ransomware.live</text>
+  <text x="800" y="138" text-anchor="middle" font-size="9" fill="#555">Pro API</text>
+  <text x="800" y="150" text-anchor="middle" font-size="8" fill="#2a6e2a">15 min</text>
+
+  <!-- Arrow to mwdb-feeder -->
+  <path d="M280 165 L280 185" stroke="#667eea" stroke-width="2" marker-end="url(#arrowPurple)"/>
+
+  <!-- Arrow to cape-feed -->
+  <path d="M720 165 L720 185" stroke="#a8edea" stroke-width="2"/>
+
+  <!-- MWDB-FEEDER -->
+  <rect x="150" y="195" width="260" height="55" rx="8" fill="url(#feederGrad)" filter="url(#shadow)"/>
+  <text x="280" y="218" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">mwdb-feeder</text>
+  <text x="280" y="235" text-anchor="middle" font-size="9" fill="#ddd">Poll -&gt; Dedupe -&gt; Download -&gt; Upload</text>
+
+  <!-- CAPE-FEED (parallel) -->
+  <rect x="590" y="195" width="260" height="55" rx="8" fill="url(#capeFeedGrad)" filter="url(#shadow)"/>
+  <text x="720" y="218" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">cape-feed</text>
+  <text x="720" y="235" text-anchor="middle" font-size="9" fill="#555">Feed -&gt; CAPE -&gt; MISP</text>
+
+  <!-- Arrow from feeder to MWDB -->
+  <path d="M280 260 L280 290" stroke="#38ef7d" stroke-width="2" marker-end="url(#arrowGreen)"/>
+
+  <!-- Arrow from cape-feed to CAPE -->
+  <path d="M720 260 L720 655 L620 655" stroke="#a8edea" stroke-width="2" stroke-dasharray="5,3"/>
+
+  <!-- MWDB + KARTON STACK Section -->
+  <rect x="30" y="300" width="620" height="380" rx="12" fill="rgba(30, 30, 60, 0.8)" stroke="#f093fb" stroke-width="2"/>
+  <text x="50" y="325" font-size="13" fill="#f093fb" font-weight="bold">MWDB + Karton Stack</text>
+
+  <!-- MWDB-CORE -->
+  <rect x="50" y="345" width="280" height="120" rx="8" fill="url(#mwdbGrad)" filter="url(#shadow)"/>
+  <text x="190" y="375" text-anchor="middle" font-size="14" font-weight="bold" fill="#fff">MWDB-core</text>
+  <rect x="70" y="390" width="240" height="20" rx="3" fill="rgba(255,255,255,0.2)"/>
+  <text x="190" y="404" text-anchor="middle" font-size="9" fill="#fff">Malware Repository + Web UI</text>
+  <rect x="70" y="415" width="240" height="20" rx="3" fill="rgba(255,255,255,0.2)"/>
+  <text x="190" y="429" text-anchor="middle" font-size="9" fill="#fff">PostgreSQL Backend + REST API</text>
+  <rect x="70" y="440" width="240" height="20" rx="3" fill="rgba(255,255,255,0.2)"/>
+  <text x="190" y="454" text-anchor="middle" font-size="9" fill="#fff">MinIO S3 Storage + Karton Integration</text>
+
+  <!-- Infrastructure boxes -->
+  <rect x="350" y="345" width="140" height="50" rx="6" fill="url(#infraGrad)" filter="url(#shadow)"/>
+  <text x="420" y="370" text-anchor="middle" font-size="11" font-weight="bold" fill="#333">PostgreSQL</text>
+  <text x="420" y="385" text-anchor="middle" font-size="8" fill="#555">mwdb-postgres</text>
+
+  <rect x="500" y="345" width="130" height="50" rx="6" fill="url(#infraGrad)" filter="url(#shadow)"/>
+  <text x="565" y="370" text-anchor="middle" font-size="11" font-weight="bold" fill="#333">MinIO</text>
+  <text x="565" y="385" text-anchor="middle" font-size="8" fill="#555">S3 Storage</text>
+
+  <!-- Arrow from MWDB to Karton System -->
+  <path d="M190 475 L190 510" stroke="#f5576c" stroke-width="2" marker-end="url(#arrowPink)"/>
+
+  <!-- KARTON SYSTEM -->
+  <rect x="50" y="520" width="200" height="60" rx="8" fill="url(#kartonGrad)" filter="url(#shadow)"/>
+  <text x="150" y="548" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">karton-system</text>
+  <text x="150" y="565" text-anchor="middle" font-size="9" fill="#ddd">Task Dispatcher</text>
+
+  <!-- Redis -->
+  <rect x="270" y="520" width="120" height="60" rx="6" fill="url(#infraGrad)" filter="url(#shadow)"/>
+  <text x="330" y="548" text-anchor="middle" font-size="11" font-weight="bold" fill="#333">Redis</text>
+  <text x="330" y="565" text-anchor="middle" font-size="8" fill="#555">Task Queue</text>
+
+  <!-- Double arrow between karton-system and Redis -->
+  <path d="M260 550 L262 550" stroke="#00f2fe" stroke-width="2"/>
+  <line x1="262" y1="545" x2="262" y2="555" stroke="#00f2fe" stroke-width="2"/>
+
+  <!-- Karton modules -->
+  <text x="80" y="600" font-size="9" fill="#4facfe">Karton Module:</text>
+
+  <rect x="50" y="610" width="90" height="45" rx="5" fill="rgba(79, 172, 254, 0.4)" stroke="#4facfe" stroke-width="1"/>
+  <text x="95" y="630" text-anchor="middle" font-size="9" fill="#fff">classifier</text>
+  <text x="95" y="645" text-anchor="middle" font-size="8" fill="#ddd">Sample-Typ</text>
+
+  <rect x="150" y="610" width="90" height="45" rx="5" fill="rgba(79, 172, 254, 0.4)" stroke="#4facfe" stroke-width="1"/>
+  <text x="195" y="625" text-anchor="middle" font-size="9" fill="#fff">archive-</text>
+  <text x="195" y="638" text-anchor="middle" font-size="9" fill="#fff">extractor</text>
+  <text x="195" y="650" text-anchor="middle" font-size="8" fill="#ddd">Entpacken</text>
+
+  <rect x="250" y="610" width="90" height="45" rx="5" fill="rgba(79, 172, 254, 0.4)" stroke="#4facfe" stroke-width="1"/>
+  <text x="295" y="625" text-anchor="middle" font-size="9" fill="#fff">mwdb-</text>
+  <text x="295" y="638" text-anchor="middle" font-size="9" fill="#fff">reporter</text>
+  <text x="295" y="650" text-anchor="middle" font-size="8" fill="#ddd">Ergebnisse</text>
+
+  <rect x="350" y="610" width="90" height="45" rx="5" fill="rgba(79, 172, 254, 0.4)" stroke="#4facfe" stroke-width="1"/>
+  <text x="395" y="625" text-anchor="middle" font-size="9" fill="#fff">cape-</text>
+  <text x="395" y="638" text-anchor="middle" font-size="9" fill="#fff">submitter</text>
+  <text x="395" y="650" text-anchor="middle" font-size="8" fill="#ddd">-&gt; CAPE</text>
+
+  <rect x="450" y="610" width="90" height="45" rx="5" fill="rgba(79, 172, 254, 0.4)" stroke="#4facfe" stroke-width="1"/>
+  <text x="495" y="630" text-anchor="middle" font-size="9" fill="#fff">dashboard</text>
+  <text x="495" y="645" text-anchor="middle" font-size="8" fill="#ddd">Web UI</text>
+
+  <!-- Arrows between modules -->
+  <path d="M145 632 L148 632" stroke="#4facfe" stroke-width="1"/>
+  <path d="M245 632 L248 632" stroke="#4facfe" stroke-width="1"/>
+  <path d="M345 632 L348 632" stroke="#4facfe" stroke-width="1"/>
+
+  <!-- Arrow to CAPE -->
+  <path d="M395 665 L395 710 L540 710" stroke="#00f2fe" stroke-width="2" marker-end="url(#arrowCyan)"/>
+
+  <!-- CAPE Sandbox -->
+  <rect x="550" y="620" width="200" height="100" rx="10" fill="url(#capeGrad)" filter="url(#shadow)"/>
+  <text x="650" y="658" text-anchor="middle" font-size="16" font-weight="bold" fill="#fff">CAPEv2</text>
+  <text x="650" y="680" text-anchor="middle" font-size="10" fill="#fff">Dynamic Analysis</text>
+  <text x="650" y="700" text-anchor="middle" font-size="9" fill="#ddd">VM-basierte Sandbox</text>
+
+  <!-- Ports Info -->
+  <rect x="670" y="300" width="300" height="230" rx="8" fill="rgba(30, 30, 60, 0.9)" stroke="#fee140" stroke-width="1"/>
+  <text x="820" y="325" text-anchor="middle" font-size="12" font-weight="bold" fill="#fee140">Ports &amp; URLs</text>
+
+  <text x="690" y="350" font-size="10" fill="#fff">Web Interfaces:</text>
+  <text x="700" y="368" font-size="9" fill="#aaa">MWDB Web: https://&lt;host&gt;:8443/</text>
+  <text x="700" y="385" font-size="9" fill="#aaa">Karton Dashboard: https://&lt;host&gt;:8444/</text>
+  <text x="700" y="402" font-size="9" fill="#aaa">MinIO Console: http://127.0.0.1:9001</text>
+  <text x="700" y="419" font-size="9" fill="#aaa">CAPEv2: https://&lt;host&gt;:443/</text>
+
+  <text x="690" y="445" font-size="10" fill="#fff">Internal Ports:</text>
+  <text x="700" y="463" font-size="9" fill="#aaa">8081: MWDB API</text>
+  <text x="700" y="480" font-size="9" fill="#aaa">8082: Karton Dashboard</text>
+  <text x="700" y="497" font-size="9" fill="#aaa">9000: MinIO S3</text>
+  <text x="700" y="514" font-size="9" fill="#aaa">5432: PostgreSQL (internal)</text>
+
+  <!-- Data Flow Legend -->
+  <rect x="670" y="730" width="300" height="100" rx="8" fill="rgba(30, 30, 60, 0.9)" stroke="#667eea" stroke-width="1"/>
+  <text x="820" y="755" text-anchor="middle" font-size="11" font-weight="bold" fill="#667eea">Datenfluss</text>
+
+  <line x1="690" y1="772" x2="730" y2="772" stroke="#667eea" stroke-width="2"/>
+  <text x="740" y="776" font-size="9" fill="#aaa">Feed -&gt; Feeder</text>
+
+  <line x1="690" y1="792" x2="730" y2="792" stroke="#38ef7d" stroke-width="2"/>
+  <text x="740" y="796" font-size="9" fill="#aaa">Feeder -&gt; MWDB</text>
+
+  <line x1="690" y1="812" x2="730" y2="812" stroke="#f5576c" stroke-width="2"/>
+  <text x="740" y="816" font-size="9" fill="#aaa">MWDB -&gt; Karton</text>
+
+  <line x1="850" y1="772" x2="890" y2="772" stroke="#00f2fe" stroke-width="2"/>
+  <text x="900" y="776" font-size="9" fill="#aaa">Karton -&gt; CAPE</text>
+
+  <line x1="850" y1="792" x2="890" y2="792" stroke="#a8edea" stroke-width="2" stroke-dasharray="5,3"/>
+  <text x="900" y="796" font-size="9" fill="#aaa">cape-feed (parallel)</text>
+
+</svg>
